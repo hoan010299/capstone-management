@@ -1,0 +1,82 @@
+<form class="form-horizontal" autocomplete="off" #bankForm="ngForm">
+    <abp-modal-header [title]="title" (onCloseClick)="dialogRef.close()">
+    </abp-modal-header>
+    <div class="modal-body" style="max-height: 500px; overflow-y: auto;">
+        <div class="form-group row required">
+            <label class="col-md-2 col-form-label" for="projectName">
+                {{ 'Building Name' }}:
+            </label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="projectName" id="projectName" 
+                     />
+            </div>
+        </div>
+        <div class="form-group row required">
+            <label class="col-md-2 col-form-label" for="projectCode">
+                {{ 'Room name' }}:
+            </label>
+            <div class="col-md-9">
+                <input type="text" class="form-control" name="projectCode" id="projectCode" required
+                    />
+            </div>
+        </div>
+   
+        <div class="form-group row required">
+            <label class="col-md-2 col-form-label">
+                Time using:
+            </label>
+            <div class="col-md-9 row">
+                <div class="col-2">
+                    <input type="text" class="form-control mr-3  mt-1" name="test" style="width: 100px;"
+                    />
+                </div>
+               
+                <div class="col-10">
+                    <label for="" class="mx-2">from:</label>
+                    <mat-form-field appearance="outline" style="width: 220px;" class="mr-3">
+                        <input matInput [matDatepicker]="picker"  placeholder="choose a date"
+                            required name="startTime">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <label for="" class="mx-2">to:</label>
+                    <mat-form-field appearance="outline"  style="width: 220px;">
+                        <input matInput [matDatepicker]="picker2"  placeholder="choose a date"
+                            name="endTime">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+             
+               
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label class="col-md-2 col-form-label" for="projectName">
+                {{ 'Purpose' }}:
+            </label>
+            <div class="col-md-9">
+                <textarea rows="4" type="text" class="form-control" name="projectName" id="projectName" 
+                     ></textarea>
+            </div>
+        </div>
+        <!-- <div class="form-group row ">
+            <label class="col-md-2 col-form-label">
+                End time:
+            </label>
+            <div class="col-md-9 datepick">
+                <mat-form-field appearance="outline">
+                    <input matInput [matDatepicker]="picker2" [(ngModel)]="project.endTime" placeholder="choose a date"
+                        name="endTime">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div> -->
+    </div>
+    <div style="background-color: white;" align="end" class="d-flex justify-content-edn" mat-dialog-actions="">
+        <button class="btn btn-default cancel-banks mr-3"  mat-dialog-close>Cancel</button>
+        <button class="btn btn-primary"
+            [disabled]="!bankForm.valid || isLoading" >Save</button>
+    </div>
+</form>

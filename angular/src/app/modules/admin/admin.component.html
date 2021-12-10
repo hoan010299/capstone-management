@@ -1,0 +1,44 @@
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <h1>{{ "Admin" }}</h1>
+            </div>
+            <div class="col-6 text-right">
+                    <button type="button" class="btn bg-blue" (click)="opendialog()">
+                        <i class="fa fa-plus-square mr-1"></i>
+                        {{ "Create account" }}
+                    </button>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="card mx-4 my-2 p-4">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+                <tr class="bg-light-gray">
+                    <th style="width: 80px">#</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th style="width: 100px">action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="
+                let admin of adminList
+                  | paginate: { id: 'paging', itemsPerPage: 10, currentPage: p };
+                let i = index
+              ">
+                    <td>{{ i + 1 }}</td>
+                    <td> {{ admin.fullName }}</td>
+                    <td>{{admin.email}}</td>
+                    <td class="text-center">{{admin.role}}</td>
+                    <td><button class="btn btn-danger" (click)="deleteAccount(admin)">delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <pagination-controls id="paging" (pageChange)="p = $event"></pagination-controls>
+</div>
