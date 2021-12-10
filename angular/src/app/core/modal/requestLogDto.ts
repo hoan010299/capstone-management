@@ -15,6 +15,7 @@ export class RequestDto {
     note: string
     status: string
     typeRequest: "string"
+    request:any
 
 
 

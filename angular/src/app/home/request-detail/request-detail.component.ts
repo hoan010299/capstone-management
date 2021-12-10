@@ -123,6 +123,7 @@ export class RequestDetailComponent implements OnInit {
     this.homeService.addRequest(requestBody).subscribe(rs => {
       this.isSubmited = true
       abp.notify.success("add request successfull")
+     
       this.dialogRef.close("success")
       this.homeService.requestListItem = []
     },

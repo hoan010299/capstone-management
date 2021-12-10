@@ -47,8 +47,9 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
   allowBooking: boolean = false
   bookByClub: boolean = false
   isViewTable: any = false
+  isBookByRoom: boolean = false
   constructor(injector: Injector, private dialog: MatDialog, private facilityService: FacilityService, private route: ActivatedRoute,
-    public authenticateService: AuthenticateService, private router:Router,
+    public authenticateService: AuthenticateService, private router: Router,
     private pdpService: IcpdpService, private homeService: HomeService) {
     super(injector)
   }
@@ -58,6 +59,9 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
     this.requestType = this.route.snapshot.queryParamMap.get("type")
     this.action = this.route.snapshot.queryParamMap.get("action")
     this.getBuilding()
+    if (this.requestType == "Semester" || this.requestType == "Event") {
+      this.bookByClub = true
+    }
     this.currentDate = this.convertDateToDay(this.currentDate)
     // this.currentDate = "Monday"   ----- đổi thứ
     // this.currentTime = "3 PM"     ----- đổi giờ (định dạng 3 AM, 4 PM, 5 PM ...)
@@ -70,6 +74,7 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
     })
   }
   onBuidingChange() {
+    this.isBookByRoom = false
     this.isRoomSelect = true
     this.getRoomByBuiding()
     this.selectedWeek = 1
@@ -94,10 +99,12 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
     this.roomList = []
     this.selectedBuildingName = null
     this.selectedRoom = null
+    this.isBookByRoom = false
   }
   onRoomChange() {
     this.getRequestByRoom(this.selectedRoom.id)
     this.isNotforPerson = this.selectedRoom.notForPersonal
+    this.isBookByRoom = true
   }
   addBooking(slot, day, e) {
     e.disabled = true
@@ -105,13 +112,13 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
       useDate: day.date,
       timeUsing: slot,
       facility: {
-        id: this.bookByClub == true ? this.selectedBuildingName.id : this.selectedRoom.id,
-        facilityName: this.bookByClub == true ? this.selectedBuildingName.facilityName : this.selectedRoom.facilityName
+        id: this.bookByClub == false ? this.selectedRoom.id : (this.bookByClub == true && !this.selectedRoom?.id) ? this.selectedBuildingName.id : this.selectedRoom.id,
+        facilityName: this.bookByClub == false ? this.selectedRoom.facilityName : (this.bookByClub == true && !this.selectedRoom?.facilityName) ? this.selectedBuildingName.facilityName : this.selectedRoom.facilityName
       },
       request_detail_status: "Open",
       element: e
     }
-
+    console.log("test",item)
     let ref = this.dialog.open(RequestDetailComponent, {
       width: "80vw",
       data: {
@@ -140,11 +147,11 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
         return
       }
       else {
-        if (this.bookByClub == true) {
-          this.getRequestByRoom(this.selectedBuildingName.id)
+        if (this.bookByClub == false || (this.bookByClub == true && this.selectedRoom?.id)) {
+          this.getRequestByRoom(this.selectedRoom.id)
         }
         else {
-          this.getRequestByRoom(this.selectedRoom.id)
+          this.getRequestByRoom(this.selectedBuildingName.id)
         }
       }
     })
@@ -167,32 +174,32 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
     this.facilityService.getAllFacility().subscribe(data => {
       this.facilityList = data
     },
-    (err)=>{
-      if(err == "401"){
-        this.router.navigate(["account/login"])
-      }
-    })
+      (err) => {
+        if (err == "401") {
+          this.router.navigate(["account/login"])
+        }
+      })
   }
   getBuilding() {
     this.pdpService.getFacilityByBuilding().subscribe(data => {
       this.buidingList = data
     },
-    (err)=>{
-      if(err == "401"){
-        this.router.navigate(["account/login"])
-      }
-    })
+      (err) => {
+        if (err == "401") {
+          this.router.navigate(["account/login"])
+        }
+      })
   }
   getRoomByBuiding() {
     if (this.selectedBuildingName) {
       this.pdpService.getRoomByBuilding(this.selectedBuildingName.id, this.bookByClub).subscribe(data => {
         this.roomList = data
       },
-      (err)=>{
-        if(err == "401"){
-          this.router.navigate(["account/login"])
-        }
-      })
+        (err) => {
+          if (err == "401") {
+            this.router.navigate(["account/login"])
+          }
+        })
     }
   }
   testi = 0
@@ -262,7 +269,7 @@ export class BookRequestComponent extends AppComponentBase implements OnInit {
 
   }
   onWeekchange() {
-    if (this.bookByClub == true) {
+    if (this.bookByClub == true && !this.selectedRoom?.id) {
       this.getRequestByRoom(this.selectedBuildingName.id)
     }
     else {

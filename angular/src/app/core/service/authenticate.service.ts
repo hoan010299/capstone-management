@@ -27,6 +27,7 @@ export class AuthenticateService extends BaseApiService {
     return 'authenticate';
   }
   login(): Observable<any> {
+    this.account.passWord = ""
     return this.http.post<any>(this.rootUrl + '/login', this.account);
   }
   logout(): Observable<any> {
